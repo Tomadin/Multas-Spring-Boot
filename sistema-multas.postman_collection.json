@@ -1,0 +1,224 @@
+{
+  "info": {
+    "name": "Sistema de Multas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Autoridades",
+      "item": [
+        {
+          "name": "Crear Autoridad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Respuesta correcta\", () => pm.expect(pm.response.text()).to.include(\"creada\"));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"García\",\n  \"dni\": 30123456,\n  \"genero\": \"M\",\n  \"idPlaca\": 1001,\n  \"idLegajo\": 2001\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/autoridades", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "autoridades"] }
+          }
+        },
+        {
+          "name": "Listar Autoridades",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Es un array\", () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/autoridades", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "autoridades"] }
+          }
+        },
+        {
+          "name": "Crear Autoridad - DNI duplicado (debe fallar)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Mensaje de DNI duplicado\", () => pm.expect(pm.response.text()).to.include(\"Ya existe\"));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"García\",\n  \"dni\": 30123456,\n  \"genero\": \"M\",\n  \"idPlaca\": 1001,\n  \"idLegajo\": 2001\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/autoridades", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "autoridades"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Infracciones",
+      "item": [
+        {
+          "name": "Crear Infracción",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Respuesta correcta\", () => pm.expect(pm.response.text()).to.include(\"creada\"));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Exceso de velocidad en zona urbana\",\n  \"importeInfraccion\": 15000.00\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/infracciones", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "infracciones"] }
+          }
+        },
+        {
+          "name": "Crear Infracción - importe 0 (debe fallar)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Mensaje de importe inválido\", () => pm.expect(pm.response.text()).to.include(\"importe\"));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Infracción inválida\",\n  \"importeInfraccion\": 0\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/infracciones", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "infracciones"] }
+          }
+        },
+        {
+          "name": "Listar Infracciones",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Es un array\", () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/infracciones", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "infracciones"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Actas",
+      "item": [
+        {
+          "name": "Crear Acta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Respuesta correcta\", () => pm.expect(pm.response.text()).to.include(\"creada\"));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fechaDeLabrado\": \"2026-05-12\",\n  \"fechaVtoPagoVolun\": \"2026-06-12\",\n  \"horaDeLabrado\": \"2026-05-12T10:30:00\",\n  \"lugarDeConstatacion\": \"Av. Corrientes 1500\",\n  \"observaciones\": \"Conductor sin casco\",\n  \"vehiculo\": {\n    \"color\": \"Rojo\",\n    \"dominio\": \"AB123CD\",\n    \"anioPatentamiento\": 2020,\n    \"marca\": {\n      \"marcaAuto\": \"Ford\",\n      \"modelo\": {\n        \"modeloAuto\": \"Focus\"\n      }\n    }\n  },\n  \"licencia\": {\n    \"numeroLicencia\": 987654,\n    \"fechaDeVto\": \"2027-01-01\",\n    \"puntosInicialesLicencia\": 20,\n    \"conductor\": {\n      \"nombre\": \"Juan\",\n      \"apellido\": \"Pérez\",\n      \"dni\": 35000001,\n      \"genero\": \"M\",\n      \"domicilio\": \"Calle Falsa 123\"\n    }\n  },\n  \"autoridadDeConstatacion\": {\n    \"nombre\": \"Carlos\",\n    \"apellido\": \"García\",\n    \"dni\": 30123456,\n    \"genero\": \"M\",\n    \"idPlaca\": 1001,\n    \"idLegajo\": 2001\n  },\n  \"organizacionEstatal\": {\n    \"nombreOrganizacion\": \"Policía de Tránsito\",\n    \"localidad\": \"Buenos Aires\"\n  },\n  \"ruta\": {\n    \"nombreRuta\": \"Ruta 9\",\n    \"kmRuta\": \"150\",\n    \"tipoRuta\": {\n      \"descTipoRuta\": \"Carretera nacional\",\n      \"nombreTipoDeRuta\": \"Nacional\"\n    }\n  },\n  \"estadoDelActa\": {\n    \"descripcionEstadoActa\": \"Acta generada y pendiente de pago\",\n    \"nombreEstadoActa\": \"PENDIENTE\"\n  },\n  \"infracciones\": [\n    {\n      \"descripcion\": \"Exceso de velocidad\",\n      \"importeInfraccion\": 15000.00\n    }\n  ]\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/actas", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "actas"] }
+          }
+        },
+        {
+          "name": "Crear Acta - sin vehículo (debe fallar)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Mensaje de vehículo faltante\", () => pm.expect(pm.response.text()).to.include(\"vehículo\"));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fechaDeLabrado\": \"2026-05-12\",\n  \"lugarDeConstatacion\": \"Av. Corrientes 1500\",\n  \"observaciones\": \"Sin vehículo\"\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/actas", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "actas"] }
+          }
+        },
+        {
+          "name": "Listar Actas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Es un array\", () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:8080/api/actas", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "actas"] }
+          }
+        }
+      ]
+    }
+  ]
+}
