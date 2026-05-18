@@ -21,7 +21,7 @@ public class Infraccion implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
     @JsonProperty("descripcion")
     private String descripcion;
     private double importeInfraccion;
@@ -41,8 +41,12 @@ public class Infraccion implements Serializable {
         this.importeInfraccion = importeInfraccion;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getDescripcionInfraccion() {

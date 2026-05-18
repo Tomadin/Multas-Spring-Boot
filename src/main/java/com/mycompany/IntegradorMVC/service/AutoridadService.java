@@ -1,13 +1,7 @@
 package com.mycompany.IntegradorMVC.service;
 
 import com.mycompany.IntegradorMVC.model.AutoridadDeConstatacion;
-import java.util.List;
 
-public interface AutoridadService {
+public interface AutoridadService extends CrudService<AutoridadDeConstatacion, Long> {
 
-    void crearAutoridad(AutoridadDeConstatacion autoridad) throws Exception;
-
-    List<AutoridadDeConstatacion> obtenerTodasLasAutoridades();
-
-    void eliminarAutoridad(int dni) throws Exception;
 }

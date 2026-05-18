@@ -16,11 +16,22 @@ public class AutoridadServiceImpl implements AutoridadService {
     private ActaDeConstatacionRepository actaRepository;
 
     @Override
-    public void crearAutoridad(AutoridadDeConstatacion autoridad) throws Exception {
+    public List<AutoridadDeConstatacion> listar() {
+        return autoridadRepository.findAll();
+    }
+
+    @Override
+    public AutoridadDeConstatacion listarPorId(Long id) throws Exception {
+        return autoridadRepository.findById(id)
+                .orElseThrow(() -> new Exception("Autoridad no encontrada con id: " + id));
+    }
+
+    @Override
+    public void crear(AutoridadDeConstatacion autoridad) throws Exception {
         if (autoridad == null) {
             throw new Exception("La autoridad no puede ser nula");
         }
-        if (autoridad.getDni() <= 0) {
+        if (autoridad.getDni() == null || autoridad.getDni() <= 0) {
             throw new Exception("DNI inválido");
         }
         if (autoridad.getNombre() == null || autoridad.getNombre().trim().isEmpty()) {
@@ -33,18 +44,21 @@ public class AutoridadServiceImpl implements AutoridadService {
     }
 
     @Override
-    public List<AutoridadDeConstatacion> obtenerTodasLasAutoridades() {
-        return autoridadRepository.findAll();
+    public void actualizar(AutoridadDeConstatacion autoridad) throws Exception {
+        if (autoridad == null || autoridad.getDni() == null) {
+            throw new Exception("Autoridad inválida para actualizar");
+        }
+        autoridadRepository.save(autoridad);
     }
 
     @Override
-    public void eliminarAutoridad(int dni) throws Exception {
-        if (!autoridadRepository.existsById(dni)) {
-            throw new Exception("No existe una autoridad con DNI " + dni);
+    public void eliminar(Long id) throws Exception {
+        if (!autoridadRepository.existsById(id)) {
+            throw new Exception("No existe una autoridad con id " + id);
         }
-        if (actaRepository.existsByAutoridadDeConstatacion_Dni(dni)) {
+        if (actaRepository.existsByAutoridadDeConstatacion_Dni(id)) {
             throw new Exception("No se puede eliminar: la autoridad tiene actas asociadas");
         }
-        autoridadRepository.deleteById(dni);
+        autoridadRepository.deleteById(id);
     }
 }

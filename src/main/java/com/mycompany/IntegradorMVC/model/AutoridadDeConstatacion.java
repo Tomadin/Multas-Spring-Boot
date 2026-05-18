@@ -14,7 +14,7 @@ public class AutoridadDeConstatacion extends Persona implements Serializable {
     public AutoridadDeConstatacion() {
     }
 
-    public AutoridadDeConstatacion(int idPlaca, int idLegajo, String nombre, String apellido, int dni, String genero) {
+    public AutoridadDeConstatacion(int idPlaca, int idLegajo, String nombre, String apellido, Long dni, String genero) {
         super(nombre, apellido, dni, genero);
         this.idPlaca = idPlaca;
         this.idLegajo = idLegajo;

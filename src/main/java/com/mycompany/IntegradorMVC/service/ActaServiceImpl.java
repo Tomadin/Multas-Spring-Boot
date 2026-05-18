@@ -26,8 +26,19 @@ public class ActaServiceImpl implements ActaService {
     private InfraccionRepository infraccionRepository;
 
     @Override
+    public List<ActaDeConstatacion> listar() {
+        return actaRepository.findAll();
+    }
+
+    @Override
+    public ActaDeConstatacion listarPorId(Long id) throws Exception {
+        return actaRepository.findById(id)
+                .orElseThrow(() -> new Exception("Acta no encontrada con id: " + id));
+    }
+
+    @Override
     @Transactional
-    public void crearActa(ActaDeConstatacion acta) throws Exception {
+    public void crear(ActaDeConstatacion acta) throws Exception {
         if (acta == null) {
             throw new Exception("El acta no puede ser nula");
         }
@@ -66,15 +77,26 @@ public class ActaServiceImpl implements ActaService {
     }
 
     @Override
-    public List<ActaDeConstatacion> obtenerTodasLasActas() {
-        return actaRepository.findAll();
+    public void actualizar(ActaDeConstatacion acta) throws Exception {
+        if (acta == null || acta.getIdActa() == null) {
+            throw new Exception("Acta inválida para actualizar");
+        }
+        actaRepository.save(acta);
+    }
+
+    @Override
+    public void eliminar(Long id) throws Exception {
+        if (!actaRepository.existsById(id)) {
+            throw new Exception("No existe un acta con id: " + id);
+        }
+        actaRepository.deleteById(id);
     }
 
     @Override
     @Transactional
-    public void cambiarEstado(int id, String nuevoEstado) throws Exception {
+    public void cambiarEstado(Long id, String nuevoEstado) throws Exception {
         ActaDeConstatacion acta = actaRepository.findById(id)
-            .orElseThrow(() -> new Exception("Acta no encontrada con id: " + id));
+                .orElseThrow(() -> new Exception("Acta no encontrada con id: " + id));
 
         if (!nuevoEstado.equals("PAGADO") && !nuevoEstado.equals("CANCELADO")) {
             throw new Exception("Estado inválido. Use PAGADO o CANCELADO");

@@ -18,13 +18,13 @@ public class Persona implements Serializable {
     protected String apellido;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int dni;
+    protected Long dni;
     protected String genero;
 
     public Persona() {
     }
 
-    public Persona(String nombre, String apellido, int dni, String genero) {
+    public Persona(String nombre, String apellido, Long dni, String genero) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
@@ -47,11 +47,11 @@ public class Persona implements Serializable {
         this.apellido = apellido;
     }
 
-    public int getDni() {
+    public Long getDni() {
         return dni;
     }
 
-    public void setDni(int dni) {
+    public void setDni(Long dni) {
         this.dni = dni;
     }
 

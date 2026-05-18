@@ -13,7 +13,7 @@ public class Conductor extends Persona implements Serializable {
     public Conductor() {
     }
 
-    public Conductor(String domicilio, String nombre, String apellido, int dni, String genero) {
+    public Conductor(String domicilio, String nombre, String apellido, Long dni, String genero) {
         super(nombre, apellido, dni, genero);
         this.domicilio = domicilio;
     }

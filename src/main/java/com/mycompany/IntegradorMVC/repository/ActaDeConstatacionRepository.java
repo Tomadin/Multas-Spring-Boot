@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ActaDeConstatacionRepository extends JpaRepository<ActaDeConstatacion, Integer> {
+public interface ActaDeConstatacionRepository extends JpaRepository<ActaDeConstatacion, Long> {
 
-    boolean existsByAutoridadDeConstatacion_Dni(int dni);
+    boolean existsByAutoridadDeConstatacion_Dni(Long dni);
 
-    boolean existsByInfracciones_Id(int id);
+    boolean existsByInfracciones_Id(Long id);
 }

@@ -24,13 +24,13 @@ public class ActaController {
 
     @GetMapping
     public ResponseEntity<List<ActaDeConstatacion>> listarActas() {
-        return ResponseEntity.ok(actaService.obtenerTodasLasActas());
+        return ResponseEntity.ok(actaService.listar());
     }
 
     @PostMapping
     public ResponseEntity<?> crearActa(@RequestBody ActaDeConstatacion acta) {
         try {
-            actaService.crearActa(acta);
+            actaService.crear(acta);
             return ResponseEntity.status(HttpStatus.CREATED).body("Acta creada correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -38,7 +38,7 @@ public class ActaController {
     }
 
     @PatchMapping("/{id}/estado")
-    public ResponseEntity<?> cambiarEstado(@PathVariable int id, @RequestParam String estado) {
+    public ResponseEntity<?> cambiarEstado(@PathVariable Long id, @RequestParam String estado) {
         try {
             actaService.cambiarEstado(id, estado);
             return ResponseEntity.ok("Estado actualizado a " + estado);

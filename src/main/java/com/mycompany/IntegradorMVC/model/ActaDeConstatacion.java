@@ -21,7 +21,7 @@ public class ActaDeConstatacion implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idActa;
+    private Long idActa;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "acta_id")
     private List<Infraccion> infracciones = new ArrayList<>();
@@ -70,11 +70,11 @@ public class ActaDeConstatacion implements Serializable {
         this.ruta = ruta;
     }
 
-    public int getIdActa() {
+    public Long getIdActa() {
         return idActa;
     }
 
-    public void setIdActa(int idActa) {
+    public void setIdActa(Long idActa) {
         this.idActa = idActa;
     }
 

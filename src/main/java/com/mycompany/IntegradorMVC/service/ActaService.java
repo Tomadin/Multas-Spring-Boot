@@ -1,15 +1,10 @@
 package com.mycompany.IntegradorMVC.service;
 
 import com.mycompany.IntegradorMVC.model.ActaDeConstatacion;
-import java.util.List;
 
-public interface ActaService {
-
-    void crearActa(ActaDeConstatacion acta) throws Exception;
-
-    List<ActaDeConstatacion> obtenerTodasLasActas();
+public interface ActaService extends CrudService<ActaDeConstatacion, Long> {
 
     double calcularTotalInfraccionesActa(ActaDeConstatacion acta);
 
-    void cambiarEstado(int id, String nuevoEstado) throws Exception;
+    void cambiarEstado(Long id, String nuevoEstado) throws Exception;
 }

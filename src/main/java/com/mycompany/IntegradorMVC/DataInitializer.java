@@ -63,12 +63,12 @@ public class DataInitializer {
     private void seedAutoridades() {
         if (autoridadRepository.count() > 0) return;
         autoridadRepository.saveAll(List.of(
-            new AutoridadDeConstatacion(1001, 2001, "Juan",    "García",    25000001, "M"),
-            new AutoridadDeConstatacion(1002, 2002, "María",   "López",     27000002, "F"),
-            new AutoridadDeConstatacion(1003, 2003, "Carlos",  "Rodríguez", 29000003, "M"),
-            new AutoridadDeConstatacion(1004, 2004, "Ana",     "Martínez",  31000004, "F"),
-            new AutoridadDeConstatacion(1005, 2005, "Pablo",   "Sánchez",   33000005, "M"),
-            new AutoridadDeConstatacion(1006, 2006, "Laura",   "Fernández", 35000006, "F")
+            new AutoridadDeConstatacion(1001, 2001, "Juan",    "García",    25000001L, "M"),
+            new AutoridadDeConstatacion(1002, 2002, "María",   "López",     27000002L, "F"),
+            new AutoridadDeConstatacion(1003, 2003, "Carlos",  "Rodríguez", 29000003L, "M"),
+            new AutoridadDeConstatacion(1004, 2004, "Ana",     "Martínez",  31000004L, "F"),
+            new AutoridadDeConstatacion(1005, 2005, "Pablo",   "Sánchez",   33000005L, "M"),
+            new AutoridadDeConstatacion(1006, 2006, "Laura",   "Fernández", 35000006L, "F")
         ));
     }
 
@@ -95,10 +95,10 @@ public class DataInitializer {
                 new Ruta("Ruta Nacional 40", "350", new TipoRuta("Ruta nacional asfaltada", "Nacional"))
             );
             Licencia lic1 = new Licencia(100001, Date.valueOf("2027-06-30"), 20);
-            lic1.setConductor(new Conductor("Belgrano 450, Mendoza", "Roberto", "Pérez", 40000001, "M"));
+            lic1.setConductor(new Conductor("Belgrano 450, Mendoza", "Roberto", "Pérez", 40000001L, "M"));
             acta1.setLicencia(lic1);
             acta1.setInfracciones(new ArrayList<>(List.of(infs.get(0), infs.get(1))));
-            actaService.crearActa(acta1);
+            actaService.crear(acta1);
 
             // ── Acta 2: Control de alcoholemia (PAGADO) ──────────────────────────
             ActaDeConstatacion acta2 = new ActaDeConstatacion(
@@ -115,10 +115,10 @@ public class DataInitializer {
                 new Ruta("Acceso Este", "12", new TipoRuta("Acceso controlado", "Provincial"))
             );
             Licencia lic2 = new Licencia(200002, Date.valueOf("2026-11-15"), 20);
-            lic2.setConductor(new Conductor("Las Heras 890, Godoy Cruz", "Valeria", "Torres", 42000002, "F"));
+            lic2.setConductor(new Conductor("Las Heras 890, Godoy Cruz", "Valeria", "Torres", 42000002L, "F"));
             acta2.setLicencia(lic2);
             acta2.setInfracciones(new ArrayList<>(List.of(infs.get(2), infs.get(5))));
-            actaService.crearActa(acta2);
+            actaService.crear(acta2);
 
             // ── Acta 3: Sin documentación (PENDIENTE) ───────────────────────────
             ActaDeConstatacion acta3 = new ActaDeConstatacion(
@@ -135,10 +135,10 @@ public class DataInitializer {
                 new Ruta("Ruta Nacional 40", "1150", new TipoRuta("Ruta nacional asfaltada", "Nacional"))
             );
             Licencia lic3 = new Licencia(300003, Date.valueOf("2025-02-28"), 20);
-            lic3.setConductor(new Conductor("Mitre 200, Las Heras", "Diego", "Morales", 38000003, "M"));
+            lic3.setConductor(new Conductor("Mitre 200, Las Heras", "Diego", "Morales", 38000003L, "M"));
             acta3.setLicencia(lic3);
             acta3.setInfracciones(new ArrayList<>(List.of(infs.get(8), infs.get(11))));
-            actaService.crearActa(acta3);
+            actaService.crear(acta3);
 
         } catch (Exception e) {
             System.err.println("[DataInitializer] Error al crear actas de ejemplo: " + e.getMessage());

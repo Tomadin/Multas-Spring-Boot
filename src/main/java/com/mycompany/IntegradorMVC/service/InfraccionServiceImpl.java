@@ -16,7 +16,18 @@ public class InfraccionServiceImpl implements InfraccionService {
     private ActaDeConstatacionRepository actaRepository;
 
     @Override
-    public void crearInfraccion(Infraccion infraccion) throws Exception {
+    public List<Infraccion> listar() {
+        return infraccionRepository.findAll();
+    }
+
+    @Override
+    public Infraccion listarPorId(Long id) throws Exception {
+        return infraccionRepository.findById(id)
+                .orElseThrow(() -> new Exception("No existe una infracción con id " + id));
+    }
+
+    @Override
+    public void crear(Infraccion infraccion) throws Exception {
         if (infraccion == null) {
             throw new Exception("La infracción no puede ser nula");
         }
@@ -34,23 +45,15 @@ public class InfraccionServiceImpl implements InfraccionService {
     }
 
     @Override
-    public List<Infraccion> obtenerTodasLasInfracciones() {
-        return infraccionRepository.findAll();
-    }
-
-    @Override
-    public void actualizarImporte(int id, double nuevoImporte) throws Exception {
-        Infraccion infraccion = infraccionRepository.findById(id)
-                .orElseThrow(() -> new Exception("No existe una infracción con id " + id));
-        if (nuevoImporte <= 0) {
-            throw new Exception("El importe debe ser mayor a 0");
+    public void actualizar(Infraccion infraccion) throws Exception {
+        if (infraccion == null || infraccion.getId() == null) {
+            throw new Exception("Infracción inválida para actualizar");
         }
-        infraccion.setImporteInfraccion(nuevoImporte);
         infraccionRepository.save(infraccion);
     }
 
     @Override
-    public void eliminarInfraccion(int id) throws Exception {
+    public void eliminar(Long id) throws Exception {
         if (!infraccionRepository.existsById(id)) {
             throw new Exception("No existe una infracción con id " + id);
         }
@@ -58,5 +61,16 @@ public class InfraccionServiceImpl implements InfraccionService {
             throw new Exception("No se puede eliminar: la infracción está asociada a una o más actas");
         }
         infraccionRepository.deleteById(id);
+    }
+
+    @Override
+    public void actualizarImporte(Long id, double nuevoImporte) throws Exception {
+        Infraccion infraccion = infraccionRepository.findById(id)
+                .orElseThrow(() -> new Exception("No existe una infracción con id " + id));
+        if (nuevoImporte <= 0) {
+            throw new Exception("El importe debe ser mayor a 0");
+        }
+        infraccion.setImporteInfraccion(nuevoImporte);
+        infraccionRepository.save(infraccion);
     }
 }

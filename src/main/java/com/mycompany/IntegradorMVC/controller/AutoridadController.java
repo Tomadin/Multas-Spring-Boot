@@ -23,23 +23,23 @@ public class AutoridadController {
 
     @GetMapping
     public ResponseEntity<List<AutoridadDeConstatacion>> listarAutoridades() {
-        return ResponseEntity.ok(autoridadService.obtenerTodasLasAutoridades());
+        return ResponseEntity.ok(autoridadService.listar());
     }
 
     @PostMapping
     public ResponseEntity<?> crearAutoridad(@RequestBody AutoridadDeConstatacion autoridad) {
         try {
-            autoridadService.crearAutoridad(autoridad);
+            autoridadService.crear(autoridad);
             return ResponseEntity.status(HttpStatus.CREATED).body("Autoridad creada correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/{dni}")
-    public ResponseEntity<?> eliminarAutoridad(@PathVariable int dni) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarAutoridad(@PathVariable Long id) {
         try {
-            autoridadService.eliminarAutoridad(dni);
+            autoridadService.eliminar(id);
             return ResponseEntity.ok("Autoridad eliminada");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
