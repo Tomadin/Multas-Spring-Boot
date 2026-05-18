@@ -1,6 +1,6 @@
 # Sistema de Multas Viales
 
-Aplicación web para la gestión de actas de constatación de infracciones de tránsito. Desarrollada como proyecto integrador para la materia de Programación.
+Aplicación web para la gestión de actas de constatación de infracciones de tránsito. Desarrollada como proyecto integrador para la materia de Programación Orientada a Objetos.
 
 ## Tecnologías
 
