@@ -33,13 +33,13 @@ La base de datos se crea automáticamente al iniciar el backend. Solo asegurate 
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/sistema_multas?...
-spring.datasource.username=root
-spring.datasource.password=root
+spring.datasource.username={db.username}
+spring.datasource.password={db.password}
 ```
 
 ### Datos iniciales
 
-Al iniciar por primera vez, el sistema carga automáticamente:
+Al iniciar por primera vez, el sistema carga automáticamente los siguientes datos de prueba:
 - 15 tipos de infracciones
 - 6 autoridades de constatación
 - 3 actas de ejemplo
@@ -80,6 +80,7 @@ La app queda disponible en `http://localhost:5173`.
 | DELETE | `/api/autoridades/{dni}` | Eliminar autoridad |
 | GET | `/api/infracciones` | Listar infracciones |
 | POST | `/api/infracciones` | Registrar infracción |
+| PATCH | `/api/infracciones/{id}/importe` | Actualizar importe de infracción |
 | DELETE | `/api/infracciones/{id}` | Eliminar infracción |
 
 ---
