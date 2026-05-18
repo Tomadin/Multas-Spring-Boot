@@ -10,4 +10,6 @@ public interface InfraccionService {
     List<Infraccion> obtenerTodasLasInfracciones();
 
     void eliminarInfraccion(int id) throws Exception;
+
+    void actualizarImporte(int id, double nuevoImporte) throws Exception;
 }

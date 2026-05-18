@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { FilePlus, UserPlus, TriangleAlert } from 'lucide-react'
 
 export default function Dashboard() {
   const [data, setData] = useState({ actas: '...', infracciones: '...', autoridades: '...' })
@@ -39,10 +40,10 @@ export default function Dashboard() {
 
       <div className="card">
         <div className="card-header"><h3>Accesos rápidos</h3></div>
-        <div style={{ padding: 20, display: 'flex', gap: 12 }}>
-          <a href="/actas" className="btn btn-primary">📄 Nueva Acta</a>
-          <a href="/autoridades" className="btn btn-secondary">👮 Nueva Autoridad</a>
-          <a href="/infracciones" className="btn btn-secondary">⚠️ Nueva Infracción</a>
+        <div style={{ padding: 24, display: 'flex', gap: 16 }}>
+          <a href="/actas" className="btn btn-primary btn-lg"><FilePlus size={20} /> Nueva Acta</a>
+          <a href="/autoridades" className="btn btn-secondary btn-lg"><UserPlus size={20} /> Nueva Autoridad</a>
+          <a href="/infracciones" className="btn btn-secondary btn-lg"><TriangleAlert size={20} /> Nueva Infracción</a>
         </div>
       </div>
     </>

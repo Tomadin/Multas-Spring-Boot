@@ -8,6 +8,7 @@ export default function Infracciones() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState(EMPTY)
   const [msg, setMsg] = useState(null)
+  const [editando, setEditando] = useState(null)  // { id, importe }
 
   const cargar = () => {
     setLoading(true)
@@ -20,6 +21,19 @@ export default function Infracciones() {
     const txt = await res.text()
     setMsg({ ok: res.ok, txt })
     if (res.ok) cargar()
+  }
+
+  const guardarImporte = async e => {
+    e.preventDefault()
+    setMsg(null)
+    const res = await fetch(`/api/infracciones/${editando.id}/importe`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ importeInfraccion: +editando.importe }),
+    })
+    const txt = await res.text()
+    setMsg({ ok: res.ok, txt })
+    if (res.ok) { setEditando(null); cargar() }
   }
 
   useEffect(() => { cargar() }, [])
@@ -67,6 +81,32 @@ export default function Infracciones() {
         </div>
       )}
 
+      {editando && (
+        <div className="card" style={{ marginBottom: 20 }}>
+          <div className="card-header"><h3>Editar importe — infracción #{editando.id}</h3></div>
+          <form onSubmit={guardarImporte}>
+            <div className="form-body">
+              <div className="f">
+                <label>Nuevo importe ($)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={editando.importe}
+                  onChange={e => setEditando(ed => ({ ...ed, importe: e.target.value }))}
+                  required
+                  autoFocus
+                />
+              </div>
+              <div className="f" />
+            </div>
+            <div className="form-footer">
+              <button className="btn btn-primary" type="submit">Actualizar</button>
+              <button className="btn btn-secondary" type="button" onClick={() => setEditando(null)}>Cancelar</button>
+            </div>
+          </form>
+        </div>
+      )}
+
       <div className="card">
         <div className="card-header">
           <h3>Listado</h3>
@@ -83,7 +123,15 @@ export default function Infracciones() {
                     <td><span className="badge badge-gray">#{i.id}</span></td>
                     <td>{i.descripcionInfraccion ?? i.descripcion}</td>
                     <td><span className="badge badge-blue">${i.importeInfraccion?.toLocaleString('es-AR')}</span></td>
-                    <td><button className="btn-accion btn-cancelar" onClick={() => eliminar(i.id)}>Eliminar</button></td>
+                    <td style={{ display: 'flex', gap: 6 }}>
+                      <button
+                        className="btn-accion btn-pagar"
+                        onClick={() => { setEditando({ id: i.id, importe: i.importeInfraccion }); setMsg(null); setShowForm(false) }}
+                      >
+                        Editar importe
+                      </button>
+                      <button className="btn-accion btn-cancelar" onClick={() => eliminar(i.id)}>Eliminar</button>
+                    </td>
                   </tr>
                 ))
               }

@@ -39,6 +39,17 @@ public class InfraccionServiceImpl implements InfraccionService {
     }
 
     @Override
+    public void actualizarImporte(int id, double nuevoImporte) throws Exception {
+        Infraccion infraccion = infraccionRepository.findById(id)
+                .orElseThrow(() -> new Exception("No existe una infracción con id " + id));
+        if (nuevoImporte <= 0) {
+            throw new Exception("El importe debe ser mayor a 0");
+        }
+        infraccion.setImporteInfraccion(nuevoImporte);
+        infraccionRepository.save(infraccion);
+    }
+
+    @Override
     public void eliminarInfraccion(int id) throws Exception {
         if (!infraccionRepository.existsById(id)) {
             throw new Exception("No existe una infracción con id " + id);
