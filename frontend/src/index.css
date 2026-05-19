@@ -168,10 +168,11 @@ textarea { resize: vertical; min-height: 64px; }
 
 /* BADGE */
 .badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 500; }
-.badge-blue  { background: var(--azul-c); color: var(--azul); }
-.badge-red   { background: #fef2f2; color: var(--rojo); }
-.badge-green { background: #f0fdf4; color: var(--verde); }
-.badge-gray  { background: var(--gris-1); color: var(--texto-s); }
+.badge-blue   { background: var(--azul-c); color: var(--azul); }
+.badge-red    { background: #fef2f2; color: var(--rojo); }
+.badge-green  { background: #f0fdf4; color: var(--verde); }
+.badge-gray   { background: var(--gris-1); color: var(--texto-s); }
+.badge-yellow { background: #fefce8; color: #a16207; }
 
 /* ALERT */
 .alert { padding: 10px 16px; border-radius: 6px; font-size: 13px; margin-bottom: 16px; }

@@ -122,7 +122,7 @@ export default function Infracciones() {
                   <tr key={i.id}>
                     <td><span className="badge badge-gray">#{i.id}</span></td>
                     <td>{i.descripcionInfraccion ?? i.descripcion}</td>
-                    <td><span className="badge badge-blue">${i.importeInfraccion?.toLocaleString('es-AR')}</span></td>
+                    <td><strong>${i.importeInfraccion?.toLocaleString('es-AR')}</strong></td>
                     <td style={{ display: 'flex', gap: 6 }}>
                       <button
                         className="btn-accion btn-pagar"

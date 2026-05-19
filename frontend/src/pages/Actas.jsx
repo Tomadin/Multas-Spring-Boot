@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react'
 
+const COLORES = ['Blanco', 'Negro', 'Gris', 'Plateado', 'Rojo', 'Azul', 'Verde', 'Amarillo', 'Naranja', 'Marrón', 'Bordó', 'Violeta']
+
+const TIPOS_RUTA = [
+  { nombre: 'Nacional',      desc: 'Ruta nacional' },
+  { nombre: 'Provincial',    desc: 'Ruta provincial' },
+  { nombre: 'Internacional', desc: 'Ruta internacional' },
+]
+
 const ORGANIZACIONES = [
   // Nacionales
   { nombre: 'Gendarmería Nacional Argentina', localidad: 'Nacional' },
@@ -39,6 +47,8 @@ export default function Actas() {
   const [autoridades, setAutoridades] = useState([])
   const [infracciones, setInfracciones] = useState([])
   const [infraccionSeleccionada, setInfraccionSeleccionada] = useState('')
+  const [busqueda, setBusqueda] = useState('')
+  const [filtroEstado, setFiltroEstado] = useState('')
 
   const cargar = () => {
     setLoading(true)
@@ -87,15 +97,38 @@ export default function Actas() {
     setMsg(null)
     if (!form.autoridadDeConstatacion) return setMsg({ ok: false, txt: 'Debe seleccionar una autoridad de constatación' })
     const body = {
-      ...form,
-      vehiculo: { ...form.vehiculo, anioPatentamiento: +form.vehiculo.anioPatentamiento },
-      licencia: {
-        ...form.licencia,
-        numeroLicencia: +form.licencia.numeroLicencia,
-        puntosInicialesLicencia: +form.licencia.puntosInicialesLicencia,
-        conductor: { ...form.licencia.conductor, dni: +form.licencia.conductor.dni },
-      },
+      lugarDeConstatacion: form.lugarDeConstatacion,
+      observaciones: form.observaciones,
+      fechaDeLabrado: form.fechaDeLabrado,
+      fechaVtoPagoVolun: form.fechaVtoPagoVolun,
       horaDeLabrado: form.horaDeLabrado ? `${form.fechaDeLabrado}T${form.horaDeLabrado}:00` : null,
+      autoridadId: form.autoridadDeConstatacion.dni,
+      infracciones: form.infracciones.map(i => ({ descripcion: i.descripcion, importeInfraccion: i.importeInfraccion })),
+      vehiculo: {
+        color: form.vehiculo.color,
+        dominio: form.vehiculo.dominio,
+        anioPatentamiento: +form.vehiculo.anioPatentamiento,
+        marcaNombre: form.vehiculo.marca.marcaAuto,
+        modeloNombre: form.vehiculo.marca.modelo.modeloAuto,
+      },
+      estadoDelActa: { descripcion: 'Acta generada', nombre: 'PENDIENTE' },
+      organizacionEstatal: form.organizacionEstatal,
+      ruta: {
+        nombreRuta: form.ruta.nombreRuta,
+        kmRuta: form.ruta.kmRuta,
+        nombreTipoRuta: form.ruta.tipoRuta.nombreTipoDeRuta,
+        descTipoRuta: form.ruta.tipoRuta.descTipoRuta,
+      },
+      licencia: {
+        numeroLicencia: +form.licencia.numeroLicencia,
+        fechaDeVto: form.licencia.fechaDeVto,
+        puntosInicialesLicencia: +form.licencia.puntosInicialesLicencia,
+        conductorNombre: form.licencia.conductor.nombre,
+        conductorApellido: form.licencia.conductor.apellido,
+        conductorDni: +form.licencia.conductor.dni,
+        conductorGenero: form.licencia.conductor.genero,
+        conductorDomicilio: form.licencia.conductor.domicilio,
+      },
     }
     const res = await fetch('/api/actas', {
       method: 'POST',
@@ -108,10 +141,10 @@ export default function Actas() {
   }
 
   const estadoBadge = e => {
-    if (e === 'PAGADO') return 'badge badge-green'
+    if (e === 'PAGADO')    return 'badge badge-green'
     if (e === 'CANCELADO') return 'badge badge-red'
-    if (e === 'VENCIDO') return 'badge badge-red'
-    return 'badge badge-blue'
+    if (e === 'VENCIDO')   return 'badge badge-red'
+    return 'badge badge-yellow'
   }
 
   const cambiarEstado = async (id, nuevoEstado) => {
@@ -122,6 +155,12 @@ export default function Actas() {
       setMsg({ ok: false, txt })
     }
   }
+
+  const listaFiltrada = lista.filter(a => {
+    const matchPatente = !busqueda || (a.vehiculoDominio ?? '').toLowerCase().includes(busqueda.toLowerCase())
+    const matchEstado = !filtroEstado || (a.estado ?? 'PENDIENTE') === filtroEstado
+    return matchPatente && matchEstado
+  })
 
   return (
     <>
@@ -146,16 +185,12 @@ export default function Actas() {
                 <label>Lugar de constatación</label>
                 <input value={form.lugarDeConstatacion} onChange={e => set('lugarDeConstatacion', e.target.value)} placeholder="Av. Corrientes 1500" required />
               </div>
-              <div className="f"><label>Fecha de labrado</label><input type="date" value={form.fechaDeLabrado} onChange={e => set('fechaDeLabrado', e.target.value)} required /></div>
+              <div className="f"><label>Fecha de labrado</label><input type="date" value={form.fechaDeLabrado} onChange={e => set('fechaDeLabrado', e.target.value)} max={new Date().toISOString().split('T')[0]} required /></div>
               <div className="f"><label>Hora</label><input type="time" value={form.horaDeLabrado} onChange={e => set('horaDeLabrado', e.target.value)} /></div>
               <div className="f"><label>Venc. pago voluntario</label><input type="date" value={form.fechaVtoPagoVolun} onChange={e => set('fechaVtoPagoVolun', e.target.value)} /></div>
               <div className="f">
                 <label>Estado</label>
-                <select value={form.estadoDelActa.nombreEstadoActa} onChange={e => set('estadoDelActa.nombreEstadoActa', e.target.value)}>
-                  <option value="PENDIENTE">Pendiente</option>
-                  <option value="PAGADO">Pagado</option>
-                  <option value="VENCIDO">Vencido</option>
-                </select>
+                <span className="badge badge-blue" style={{ alignSelf: 'flex-start', marginTop: 4 }}>PENDIENTE</span>
               </div>
               <div className="f span-2"><label>Observaciones</label><textarea value={form.observaciones} onChange={e => set('observaciones', e.target.value)} /></div>
 
@@ -217,7 +252,13 @@ export default function Actas() {
               {/* VEHÍCULO */}
               <p className="section-title">Vehículo</p>
               <div className="f"><label>Dominio</label><input value={form.vehiculo.dominio} onChange={e => set('vehiculo.dominio', e.target.value)} placeholder="AB123CD" required /></div>
-              <div className="f"><label>Color</label><input value={form.vehiculo.color} onChange={e => set('vehiculo.color', e.target.value)} placeholder="Rojo" required /></div>
+              <div className="f">
+                <label>Color</label>
+                <select value={form.vehiculo.color} onChange={e => set('vehiculo.color', e.target.value)} required>
+                  <option value="">— Color —</option>
+                  {COLORES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
               <div className="f"><label>Año</label><input type="number" value={form.vehiculo.anioPatentamiento} onChange={e => set('vehiculo.anioPatentamiento', e.target.value)} placeholder="2020" required /></div>
               <div className="f"><label>Marca</label><input value={form.vehiculo.marca.marcaAuto} onChange={e => set('vehiculo.marca.marcaAuto', e.target.value)} placeholder="Ford" required /></div>
               <div className="f"><label>Modelo</label><input value={form.vehiculo.marca.modelo.modeloAuto} onChange={e => set('vehiculo.marca.modelo.modeloAuto', e.target.value)} placeholder="Focus" required /></div>
@@ -244,8 +285,19 @@ export default function Actas() {
               {/* RUTA */}
               <p className="section-title">Ruta</p>
               <div className="f"><label>Nombre</label><input value={form.ruta.nombreRuta} onChange={e => set('ruta.nombreRuta', e.target.value)} placeholder="Ruta 9" required /></div>
-              <div className="f"><label>KM</label><input value={form.ruta.kmRuta} onChange={e => set('ruta.kmRuta', e.target.value)} placeholder="150" required /></div>
-              <div className="f"><label>Tipo</label><input value={form.ruta.tipoRuta.nombreTipoDeRuta} onChange={e => set('ruta.tipoRuta.nombreTipoDeRuta', e.target.value)} placeholder="Nacional" required /></div>
+              <div className="f"><label>KM</label><input type="number" min="0" value={form.ruta.kmRuta} onChange={e => set('ruta.kmRuta', e.target.value)} placeholder="150" required /></div>
+              <div className="f">
+                <label>Tipo de ruta</label>
+                <select value={form.ruta.tipoRuta.nombreTipoDeRuta}
+                  onChange={e => {
+                    const t = TIPOS_RUTA.find(t => t.nombre === e.target.value)
+                    set('ruta.tipoRuta.nombreTipoDeRuta', t?.nombre ?? '')
+                    set('ruta.tipoRuta.descTipoRuta', t?.desc ?? '')
+                  }} required>
+                  <option value="">— Tipo —</option>
+                  {TIPOS_RUTA.map(t => <option key={t.nombre} value={t.nombre}>{t.nombre}</option>)}
+                </select>
+              </div>
             </div>
 
             <div className="form-footer">
@@ -259,16 +311,30 @@ export default function Actas() {
       <div className="card">
         <div className="card-header">
           <h3>Listado</h3>
-          <span style={{ color: 'var(--texto-s)', fontSize: 12 }}>{lista.length} registros</span>
+          <span style={{ color: 'var(--texto-s)', fontSize: 12 }}>{listaFiltrada.length} registros</span>
+        </div>
+        <div style={{ padding: '10px 20px', borderBottom: '1px solid var(--gris-2)', display: 'flex', gap: 12 }}>
+          <input
+            placeholder="Buscar por patente..."
+            value={busqueda}
+            onChange={e => setBusqueda(e.target.value)}
+            style={{ maxWidth: 220 }}
+          />
+          <select value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)} style={{ maxWidth: 180 }}>
+            <option value="">Todos los estados</option>
+            <option value="PENDIENTE">Pendiente</option>
+            <option value="PAGADO">Pagado</option>
+            <option value="CANCELADO">Cancelado</option>
+          </select>
         </div>
         {loading ? <div className="loading">Cargando...</div> : (
           <table>
-            <thead><tr><th>#</th><th>Fecha</th><th>Lugar</th><th>Vehículo</th><th>Estado</th><th>Infracciones</th><th>Total</th><th>Acciones</th></tr></thead>
+            <thead><tr><th>#</th><th>Fecha</th><th>Lugar</th><th>Vehículo</th><th>Conductor</th><th>Autoridad</th><th>Estado</th><th>Infracciones</th><th>Total</th><th>Acciones</th></tr></thead>
             <tbody>
-              {lista.length === 0
-                ? <tr className="empty"><td colSpan={8}>Sin registros aún</td></tr>
-                : lista.map(a => {
-                  const estado = a.estadoDelActa?.nombreEstadoActa ?? 'PENDIENTE'
+              {listaFiltrada.length === 0
+                ? <tr className="empty"><td colSpan={10}>Sin registros aún</td></tr>
+                : listaFiltrada.map(a => {
+                  const estado = a.estado ?? 'PENDIENTE'
                   const pendiente = estado === 'PENDIENTE'
                   const total = (a.infracciones ?? []).reduce((sum, i) => sum + (i.importeInfraccion ?? 0), 0)
                   return (
@@ -276,10 +342,12 @@ export default function Actas() {
                       <td><span className="badge badge-gray">#{a.idActa}</span></td>
                       <td>{a.fechaDeLabrado ? new Date(a.fechaDeLabrado).toLocaleDateString('es-AR') : '-'}</td>
                       <td>{a.lugarDeConstatacion}</td>
-                      <td>{a.vehiculo?.dominio ?? '-'}</td>
+                      <td>{a.vehiculoDominio ?? '-'}</td>
+                      <td>{a.conductor ?? '-'}</td>
+                      <td>{a.autoridad ?? '-'}</td>
                       <td><span className={estadoBadge(estado)}>{estado}</span></td>
                       <td>{a.infracciones?.length ?? 0}</td>
-                      <td><span className="badge badge-blue">${total.toLocaleString('es-AR')}</span></td>
+                      <td><strong>${total.toLocaleString('es-AR')}</strong></td>
                       <td>
                         {pendiente && (
                           <div style={{ display: 'flex', gap: 6 }}>

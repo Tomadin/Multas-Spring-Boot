@@ -1,6 +1,7 @@
 package com.mycompany.IntegradorMVC.controller;
 
-import com.mycompany.IntegradorMVC.model.Infraccion;
+import com.mycompany.IntegradorMVC.dto.request.InfraccionRequestDTO;
+import com.mycompany.IntegradorMVC.dto.response.InfraccionResponseDTO;
 import com.mycompany.IntegradorMVC.service.InfraccionService;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +25,17 @@ public class InfraccionController {
     private InfraccionService infraccionService;
 
     @GetMapping
-    public ResponseEntity<List<Infraccion>> listarInfracciones() {
-        return ResponseEntity.ok(infraccionService.listar());
+    public ResponseEntity<List<InfraccionResponseDTO>> listarInfracciones() {
+        List<InfraccionResponseDTO> response = infraccionService.listar().stream()
+            .map(InfraccionResponseDTO::from)
+            .toList();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<?> crearInfraccion(@RequestBody Infraccion infraccion) {
+    public ResponseEntity<?> crearInfraccion(@RequestBody InfraccionRequestDTO dto) {
         try {
-            infraccionService.crear(infraccion);
+            infraccionService.crear(dto.toEntity());
             return ResponseEntity.status(HttpStatus.CREATED).body("Infracción creada correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

@@ -64,11 +64,15 @@ public class ActaServiceImpl implements ActaService {
             autoridadRepository.save(acta.getAutoridadDeConstatacion())
         );
 
-        // Re-obtener infracciones por ID para que Hibernate las trate como entidades gestionadas
+        // Re-obtener infracciones por ID si ya existen; las nuevas (sin ID) se persisten en cascada
         if (acta.getInfracciones() != null && !acta.getInfracciones().isEmpty()) {
             List<Infraccion> gestionadas = new ArrayList<>();
             for (Infraccion inf : acta.getInfracciones()) {
-                infraccionRepository.findById(inf.getId()).ifPresent(gestionadas::add);
+                if (inf.getId() != null) {
+                    infraccionRepository.findById(inf.getId()).ifPresent(gestionadas::add);
+                } else {
+                    gestionadas.add(inf);
+                }
             }
             acta.setInfracciones(gestionadas);
         }
