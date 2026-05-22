@@ -68,7 +68,7 @@ La app queda disponible en `http://localhost:5173`.
 
 ---
 
-![Diagrama de clases](Diagrama%20de%20clasess.jpeg)
+![Diagrama de clases](Diagrama%20de%20clases.jpeg)
 
 
 ## Endpoints REST
